@@ -1,11 +1,31 @@
-version: 0.2
-
+version: 0.1
+            
 phases:
+
+  install: 
+    commands:
+      - go get -u github.com/golang/lint/golint
+
+  pre_build: 
+    commands:
+
+      # Ensure code passes all lint tests
+      - golint -set_exit_status
+
+      # Run all tests included with our application
+      - go test
+
   build:
     commands:
-      - chmod +x ./gradlew
-      - ./gradlew assembleDebug
+
+      # Build our application
+      - go build -o app
+
 artifacts:
   files:
-     - './android/app/build/outputs/**/*.apk'
-  discard-paths: yes
+    - app
+    - appspec.yml
+    - buildspec.yml
+    - config/*
+    - codedeploy/*
+    - cloudformation/*
